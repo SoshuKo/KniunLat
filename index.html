@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>クニューン語単語生成器</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>クニューン語単語生成器</h1>
+  <form id="wordGeneratorForm">
+    <label for="partOfSpeech">品詞:</label>
+    <select id="partOfSpeech">
+      <option value="noun">名詞</option>
+      <option value="adjective">形容詞</option>
+      <option value="adverb">副詞</option>
+      <option value="preposition">前置詞</option>
+      <option value="intransitiveVerb">自動詞</option>
+      <option value="transitiveVerb">他動詞</option>
+      <option value="ditransitiveVerb">間目動詞</option>
+    </select>
+
+    <label for="class">クラス:</label>
+    <select id="class">
+      <option value="1">1（男性）</option>
+      <option value="2">2（女性）</option>
+      <option value="3">3（中性）</option>
+      <option value="4">4（抽象）</option>
+      <option value="5">5（物質）</option>
+      <option value="6">6（集合）</option>
+    </select>
+
+    <label for="syllableCount">音節数:</label>
+    <select id="syllableCount">
+      <option value="1">1</option>
+      <option value="2">2</option>
+    </select>
+
+    <label for="absoluteCase">絶対格:</label>
+    <input type="checkbox" id="absoluteCase">
+
+    <label for="wordCount">生成する単語数:</label>
+    <input type="number" id="wordCount" value="1" min="1">
+
+    <button type="button" id="generateButton">生成</button>
+  </form>
+
+  <h2>生成された単語</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>列1</th>
+        <th>列2</th>
+      </tr>
+    </thead>
+    <tbody id="generatedWords">
+    </tbody>
+  </table>
+
+  <script src="script.js"></script>
+</body>
+</html>
