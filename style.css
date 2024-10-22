@@ -1,10 +1,12 @@
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
+  background-color: #F9F5E9; /* 背景色を淡いオレンジに設定 */
 }
 
 h1 {
   text-align: center;
+  color: #F09000; /* タイトルの色をオレンジに設定 */
 }
 
 form {
@@ -18,12 +20,29 @@ table {
 }
 
 th, td {
-  border: 1px solid #000;
+  border: 1px solid #F09000; /* セルのボーダー色をオレンジに設定 */
   padding: 8px;
   text-align: center;
+}
+
+th {
+  background-color: #F09000; /* ヘッダーの背景色をオレンジに設定 */
+  color: white; /* ヘッダーの文字色を白に設定 */
+}
+
+td {
+  background-color: #FFF; /* セルの背景色を白に設定 */
 }
 
 button {
   margin-top: 10px;
   padding: 5px 15px;
+  background-color: #F09000; /* ボタンの背景色をオレンジに設定 */
+  color: white; /* ボタンの文字色を白に設定 */
+  border: none; /* ボタンのボーダーをなしに設定 */
+  cursor: pointer; /* カーソルをポインターに設定 */
+}
+
+button:hover {
+  background-color: #D68000; /* ホバー時のボタン色を少し暗いオレンジに設定 */
 }
