@@ -1,7 +1,7 @@
 // 共通セクション
 
 // 子音と母音の定義
-const consonants1 = ["b", "bl", "bm", "br", "c", "c'", "c'l", "ch", "ch'", "ch'r", "chr", "cl", "d", "dl", "dn", "dr", "dz", "dzl", "f", "fl", "fr", "g", "gh", "gl", "gn", "gr", "h", "hl", "hm", "hn", "hng", "hr", "j", "jr", "k", "k'", "k'l", "k'n", "k'r", "kl", "kn", "kr", "l", "m", "n", "ng", "p", "p'", "p'l", "p'm", "p'r", "pl", "pm", "pr", "q", "r", "s", "t", "t'", "t'l", "t'n", "t'r", "tl", "tn", "tr", "v", "x", "z", "zh", "zhr", "zl"];
+const consonants1 = ["b", "bl", "bm", "br", "c", "c’", "cʼl", "ch", "ch’", "ch’r", "chr", "cl", "d", "dl", "dn", "dr", "dz", "dzl", "f", "fl", "fr", "g", "gh", "gl", "gn", "gr", "h", "hl", "hm", "hn", "hng", "hr", "j", "jr", "k", "k’", "k’l", "k’n", "k’r", "kl", "kn", "kr", "l", "m", "n", "ng", "p", "p’", "p’l", "p’m", "p’r", "pl", "pm", "pr", "q", "r", "s", "t", "t’", "t’l", "t’n", "t’r", "tl", "tn", "tr", "v", "x", "z", "zh", "zhr", "zl"];
 const vowels1 = ["V", "Wi", "Wu", "iW", "uW"];
 const consonants3 = ["f", "fk", "fp", "ft", "l", "lk", "lp", "lt", "m", "mp", "ng", "nk", "nt", "q", "r", "rk", "rp", "rt", "s", "shk", "shp", "sht", "sk", "sp", "st", "xk", "xp", "xt"];
 
@@ -170,7 +170,7 @@ function applyClassTransformation(wordClass, word) {
   if (['b', 'bl', 'bm', 'br', 'd', 'dl', 'dn', 'dr', 'dz', 'dzl', 'f', 'fl', 'fr', 'g', 'gh', 'gl', 'gn', 'gr', 'j', 'jr', 'r', 's', 'v', 'x', 'z', 'zh', 'zhr', 'zl'].includes(word[0])) {
     // 語頭に"s"を設置しない
   } else if (word.startsWith('q')) {
-    wordModified = 's\'' + word.slice(1); // qをs'に置換
+    wordModified = 's’' + word.slice(1); // qをs'に置換
   } else {
     wordModified = 's' + word; // 語頭に"s"を設置
   }
