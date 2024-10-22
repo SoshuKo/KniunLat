@@ -8,6 +8,25 @@ const consonants3 = ["f", "fk", "fp", "ft", "l", "lk", "lp", "lt", "m", "mp", "n
 // フォームの要素を取得
 const form = document.getElementById('wordGeneratorForm');
 const generatedWordsTable = document.getElementById('generatedWords');
+const absoluteCaseCheckbox = document.getElementById('absoluteCase');
+
+// 品詞選択時の処理
+document.getElementById('partOfSpeech').addEventListener('change', (e) => {
+  const partOfSpeech = e.target.value;
+
+  // 「形容詞」「副詞」「前置詞」の場合、絶対格を強制的にオンにする
+  if (partOfSpeech === 'adjective' || partOfSpeech === 'adverb' || partOfSpeech === 'preposition') {
+    absoluteCaseCheckbox.checked = true;
+    absoluteCaseCheckbox.disabled = true; // 強制的にオンで固定
+  } else if (partOfSpeech === 'intransitiveVerb' || partOfSpeech === 'transitiveVerb' || partOfSpeech === 'ditransitiveVerb') {
+    // 「自動詞」「他動詞」「間目動詞」の場合、絶対格を強制的にオフにする
+    absoluteCaseCheckbox.checked = false;
+    absoluteCaseCheckbox.disabled = true; // 強制的にオフで固定
+  } else {
+    // それ以外の品詞の場合、絶対格をユーザーが変更可能にする
+    absoluteCaseCheckbox.disabled = false;
+  }
+});
 
 // 単語生成関数
 function generateWord() {
@@ -37,20 +56,26 @@ function generateWord() {
     if (syllableCount === '2') {
       // ④ 子音2を抽選
       word1 += consonants1[Math.floor(Math.random() * consonants1.length)];
+      wordRootClass1 += consonants1[Math.floor(Math.random() * consonants1.length)];
       // ⑤ 母音2を抽選
-      word1 += vowels1[Math.floor(Math.random() * vowels1.length)];
+      const vowel2 = vowels1[Math.floor(Math.random() * vowels1.length)];
+      word1 += vowel2;
+      wordRootClass1 += vowel2.replace(/V|W/g, 'a');
     }
 
     // ⑥ 1/3の確率で⑦に進む
     if (Math.random() < 0.33) {
       // ⑦ 子音3を抽選
-      word1 += consonants3[Math.floor(Math.random() * consonants3.length)];
+      const consonant3 = consonants3[Math.floor(Math.random() * consonants3.length)];
+      word1 += consonant3;
+      wordRootClass1 += consonant3;
       consonant3Selected = true;
     }
 
     // ⑧ チェックボックス「絶対格」がオンで、かつ子音3が抽選された場合のみ語尾にeを設置
     if (consonant3Selected && absoluteCase) {
       word1 += 'e';
+      wordRootClass1 += 'e';
     }
 
     // クラス処理
@@ -80,21 +105,21 @@ function generateWord() {
       case 'noun': // 名詞
         break; // 特に追加の処理なし
       case 'adjective': // 形容詞
-        if (consonant3Selected || absoluteCase) {
+        if (consonant3Selected) {
           word1 += 'sh';
         } else {
           word1 += 'she';
         }
         break;
       case 'adverb': // 副詞
-        if (consonant3Selected || absoluteCase) {
+        if (consonant3Selected) {
           word1 += 'l';
         } else {
           word1 += 'le';
         }
         break;
       case 'preposition': // 前置詞
-        if (consonant3Selected || absoluteCase) {
+        if (consonant3Selected) {
           word1 += 'n';
         } else {
           word1 += 'ne';
@@ -123,33 +148,27 @@ function generateWord() {
         break;
     }
 
-    // ⑪ 列1に単語、列2に語根を出力
-    const row = document.createElement('tr');
-    row.innerHTML = `<td>${word1}</td><td>${wordRootClass1}</td>`;
-    generatedWordsTable.appendChild(row);
+    // ⑪ 単語を出力
+    const row = generatedWordsTable.insertRow();
+    row.insertCell(0).innerText = word1;
+    row.insertCell(1).innerText = wordRootClass1; // 語根出力
   }
 }
 
-// クラス転換規則を適用
+// クラス転換規則を適用する関数
 function applyClassTransformation(wordClass, word) {
   let wordModified = word;
-
-  if (wordClass === '4' || wordClass === '5' || wordClass === '6') {
-    // クラス転換規則
-    const firstConsonant = word[0];
-    if (["b", "bl", "bm", "br", "d", "dl", "dn", "dr", "dz", "dzl", "f", "fl", "fr", "g", "gh", "gl", "gn", "gr", "j", "jr", "r", "s", "v", "x", "z", "zh", "zhr", "zl"].includes(firstConsonant)) {
-      // 語頭にsを設置しない
-    } else if (firstConsonant === 'q') {
-      // 語頭のqをs'に置換
-      wordModified = wordModified.replace(/^q/, "s'");
-    } else {
-      // 語頭にsを設置
-      wordModified = "s" + wordModified;
-    }
+  // 子音1に応じた処理
+  if (['b', 'bl', 'bm', 'br', 'd', 'dl', 'dn', 'dr', 'dz', 'dzl', 'f', 'fl', 'fr', 'g', 'gh', 'gl', 'gn', 'gr', 'j', 'jr', 'r', 's', 'v', 'x', 'z', 'zh', 'zhr', 'zl'].includes(word[0])) {
+    // 語頭に"s"を設置しない
+  } else if (word.startsWith('q')) {
+    wordModified = 's\'' + word.slice(1); // qをs'に置換
+  } else {
+    wordModified = 's' + word; // 語頭に"s"を設置
   }
 
   // クラスによる母音置換
-  if (wordClass === '4' || wordClass === '5') {
+  if (['4', '5'].includes(wordClass)) {
     wordModified = wordModified.replace(/V|W/g, wordClass === '4' ? 'a' : 'e');
   } else if (wordClass === '6') {
     wordModified = wordModified.replace(/V/g, Math.random() < 0.67 ? 'i' : 'u')
@@ -162,4 +181,3 @@ function applyClassTransformation(wordClass, word) {
 
 // 生成ボタンのイベントリスナーを追加
 document.getElementById('generateButton').addEventListener('click', generateWord);
-
