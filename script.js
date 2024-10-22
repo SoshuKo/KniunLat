@@ -76,13 +76,14 @@ function generateWord() {
       const consonant3 = consonants3[Math.floor(Math.random() * consonants3.length)];
       word1 += consonant3;
       wordBase += consonant3; // ベースにも同じ子音を追加
+      wordRootClass1 += consonant3; // 子音3を語根にも追加
       consonant3Selected = true;
     }
 
     // ⑧ チェックボックス「絶対格」がオンで、かつ子音3が抽選された場合のみ語尾にeを設置
     if (consonant3Selected && absoluteCase) {
       word1 += 'e';
-      wordRootClass1 += 'e';
+      wordRootClass1 += 'e'; // 語根にもeを追加
     }
 
     // クラス処理
