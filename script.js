@@ -43,24 +43,31 @@ function generateWord() {
   for (let i = 0; i < wordCount; i++) {
     // ① 子音1を抽選
     let word1 = consonants1[Math.floor(Math.random() * consonants1.length)];
-    let wordRoot = word1;
+    let wordBase = word1; // クラス1に適用するためのベース
 
     // ② 母音1を抽選
-    word1 += vowels1[Math.floor(Math.random() * vowels1.length)];
+    let vowel1 = vowels1[Math.floor(Math.random() * vowels1.length)];
+    word1 += vowel1;
+    wordBase += vowel1; // ベースにも同じ母音を追加
 
-    // 語根はクラス1の名詞の絶対格と同じ形にする
-    let wordRootClass1 = word1.replace(/V|W/g, 'a');
+    // 語根はクラス1の名詞の絶対格と同じ形にするため、ここでは置換はまだ行わない
+    let wordRootClass1 = wordBase.replace(/V|W/g, 'a');
 
     // ③ 音節数が「1」の場合、⑥に飛ぶ
     let consonant3Selected = false;
     if (syllableCount === '2') {
       // ④ 子音2を抽選
-      word1 += consonants1[Math.floor(Math.random() * consonants1.length)];
-      wordRootClass1 += consonants1[Math.floor(Math.random() * consonants1.length)];
+      let consonant2 = consonants1[Math.floor(Math.random() * consonants1.length)];
+      word1 += consonant2;
+      wordBase += consonant2; // ベースにも同じ子音を追加
+
       // ⑤ 母音2を抽選
-      const vowel2 = vowels1[Math.floor(Math.random() * vowels1.length)];
+      let vowel2 = vowels1[Math.floor(Math.random() * vowels1.length)];
       word1 += vowel2;
-      wordRootClass1 += vowel2.replace(/V|W/g, 'a');
+      wordBase += vowel2; // ベースにも同じ母音を追加
+
+      // クラス1の変換も同じタイミングで行う
+      wordRootClass1 = wordBase.replace(/V|W/g, 'a');
     }
 
     // ⑥ 1/3の確率で⑦に進む
@@ -68,7 +75,7 @@ function generateWord() {
       // ⑦ 子音3を抽選
       const consonant3 = consonants3[Math.floor(Math.random() * consonants3.length)];
       word1 += consonant3;
-      wordRootClass1 += consonant3;
+      wordBase += consonant3; // ベースにも同じ子音を追加
       consonant3Selected = true;
     }
 
@@ -150,8 +157,8 @@ function generateWord() {
 
     // ⑪ 単語を出力
     const row = generatedWordsTable.insertRow();
-    row.insertCell(0).innerText = word1;
-    row.insertCell(1).innerText = wordRootClass1; // 語根出力
+    row.insertCell(0).innerText = word1; // 列1：生成された単語
+    row.insertCell(1).innerText = wordRootClass1; // 列2：クラス1に置換した単語
   }
 }
 
