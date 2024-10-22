@@ -3,7 +3,6 @@
 // 子音と母音の定義
 const consonants1 = ["b", "bl", "bm", "br", "c", "c'", "c'l", "ch", "ch'", "ch'r", "chr", "cl", "d", "dl", "dn", "dr", "dz", "dzl", "f", "fl", "fr", "g", "gh", "gl", "gn", "gr", "h", "hl", "hm", "hn", "hng", "hr", "j", "jr", "k", "k'", "k'l", "k'n", "k'r", "kl", "kn", "kr", "l", "m", "n", "ng", "p", "p'", "p'l", "p'm", "p'r", "pl", "pm", "pr", "q", "r", "s", "t", "t'", "t'l", "t'n", "t'r", "tl", "tn", "tr", "v", "x", "z", "zh", "zhr", "zl"];
 const vowels1 = ["V", "Wi", "Wu", "iW", "uW"];
-const consonants2 = [...consonants1];
 const consonants3 = ["f", "fk", "fp", "ft", "l", "lk", "lp", "lt", "m", "mp", "ng", "nk", "nt", "q", "r", "rk", "rp", "rt", "s", "shk", "shp", "sht", "sk", "sp", "st", "xk", "xp", "xt"];
 
 // フォームの要素を取得
@@ -30,22 +29,27 @@ function generateWord() {
     // ② 母音1を抽選
     word1 += vowels1[Math.floor(Math.random() * vowels1.length)];
 
+    // 語根はクラス1の名詞の絶対格と同じ形にする
+    let wordRootClass1 = word1.replace(/V|W/g, 'a');
+
     // ③ 音節数が「1」の場合、⑥に飛ぶ
+    let consonant3Selected = false;
     if (syllableCount === '2') {
       // ④ 子音2を抽選
-      word1 += consonants2[Math.floor(Math.random() * consonants2.length)];
+      word1 += consonants1[Math.floor(Math.random() * consonants1.length)];
       // ⑤ 母音2を抽選
       word1 += vowels1[Math.floor(Math.random() * vowels1.length)];
     }
 
-    // ⑥ 1/3の確立で⑦に進む
+    // ⑥ 1/3の確率で⑦に進む
     if (Math.random() < 0.33) {
       // ⑦ 子音3を抽選
       word1 += consonants3[Math.floor(Math.random() * consonants3.length)];
+      consonant3Selected = true;
     }
 
-    // ⑧ チェックボックス「絶対格」がオンの場合、語尾にeを設置
-    if (absoluteCase) {
+    // ⑧ チェックボックス「絶対格」がオンで、かつ子音3が抽選された場合のみ語尾にeを設置
+    if (consonant3Selected && absoluteCase) {
       word1 += 'e';
     }
 
@@ -70,37 +74,58 @@ function generateWord() {
         break;
     }
 
-    // 語根はVとWをaに置換し、列2に出力
-    wordRoot = wordRoot.replace(/V|W/g, 'a');
-
     // 品詞ごとの処理
     // ⑩ 品詞に基づいた処理
     switch (partOfSpeech) {
       case 'noun': // 名詞
         break; // 特に追加の処理なし
       case 'adjective': // 形容詞
-        word1 += word1.includes(consonants3) ? 'sh' : 'she';
+        if (consonant3Selected || absoluteCase) {
+          word1 += 'sh';
+        } else {
+          word1 += 'she';
+        }
         break;
       case 'adverb': // 副詞
-        word1 += word1.includes(consonants3) ? 'l' : 'le';
+        if (consonant3Selected || absoluteCase) {
+          word1 += 'l';
+        } else {
+          word1 += 'le';
+        }
         break;
       case 'preposition': // 前置詞
-        word1 += word1.includes(consonants3) ? 'n' : 'ne';
+        if (consonant3Selected || absoluteCase) {
+          word1 += 'n';
+        } else {
+          word1 += 'ne';
+        }
         break;
       case 'intransitiveVerb': // 自動詞
-        word1 = 'ba=' + word1 + (word1.includes(consonants3) ? '-uhr-ab-a' : '-hr-ab-a');
+        if (consonant3Selected) {
+          word1 = 'ba=' + word1 + '-uhr-ab-a';
+        } else {
+          word1 = 'ba=' + word1 + '-hr-ab-a';
+        }
         break;
       case 'transitiveVerb': // 他動詞
-        word1 = 'ga=' + word1 + (word1.includes(consonants3) ? '-uf-ab-a' : '-f-ab-a');
+        if (consonant3Selected) {
+          word1 = 'ga=' + word1 + '-uf-ab-a';
+        } else {
+          word1 = 'ga=' + word1 + '-f-ab-a';
+        }
         break;
       case 'ditransitiveVerb': // 間目動詞
-        word1 = 'da=' + word1 + (word1.includes(consonants3) ? '-ux-ab-a' : '-x-ab-a');
+        if (consonant3Selected) {
+          word1 = 'da=' + word1 + '-ux-ab-a';
+        } else {
+          word1 = 'da=' + word1 + '-x-ab-a';
+        }
         break;
     }
 
-    // ⑪ 列1に単語を出力
+    // ⑪ 列1に単語、列2に語根を出力
     const row = document.createElement('tr');
-    row.innerHTML = `<td>${word1}</td><td>${wordRoot}</td>`;
+    row.innerHTML = `<td>${word1}</td><td>${wordRootClass1}</td>`;
     generatedWordsTable.appendChild(row);
   }
 }
@@ -137,3 +162,4 @@ function applyClassTransformation(wordClass, word) {
 
 // 生成ボタンのイベントリスナーを追加
 document.getElementById('generateButton').addEventListener('click', generateWord);
+
